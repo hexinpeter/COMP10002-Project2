@@ -65,9 +65,10 @@ int main(int argc, const char * argv[])
     /*process the votes*/
     numvoter = 0;
     for (i = 1; i!=0;) {
-        voter_t voter;
-        init_voter(&voter, numcan);
-        i = voter_input_processing(numcan, candidates, &voter);
+        voter_t *voter;
+        voter = malloc(sizeof(voter_t));
+        init_voter(voter, numcan);
+        i = voter_input_processing(numcan, candidates, voter);
         numvoter += 1;
     }
     numvoter -= 1; /*the last voter is not processed*/
@@ -88,7 +89,7 @@ void init_cand(candidate_t *cand){
 /*initialise the struct for one voter*/
 void init_voter(voter_t *voter, int numcan) {
     voter->votes = malloc(sizeof(int)*numcan);
-    voter->current = 1;
+    voter->current = 0;
     voter->next = NULL;
 }
 
@@ -96,7 +97,9 @@ void init_voter(voter_t *voter, int numcan) {
 void free_voter(voter_t *voter){
     assert(voter != NULL);
     free(voter->votes);
+    voter->votes = NULL;
     free(voter->next);
+    voter->next = NULL;
     free(voter);
 }
 
